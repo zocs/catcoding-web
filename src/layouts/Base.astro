@@ -1,19 +1,19 @@
 ---
-import '../styles/global.css';
-
 interface Props {
   title: string;
   description?: string;
+  lang?: string;
 }
 
-const { title, description = '让 AI 像猫咪团队一样协作写代码' } = Astro.props;
+const { title, description = 'Let AI cats collaborate like a dev team', lang = 'en' } = Astro.props;
+const langDesc = lang === 'zh' ? '让 AI 像猫咪团队一样协作写代码' : description;
 ---
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang={lang}>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content={description} />
+  <meta name="description" content={langDesc} />
   <title>{title} — CatCoding</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 </head>
@@ -21,13 +21,13 @@ const { title, description = '让 AI 像猫咪团队一样协作写代码' } = A
   <slot />
   <footer>
     <div class="container">
-      <p>🐱 CatCoding — 让 AI 像猫咪团队一样协作写代码</p>
+      <p>🐱 CatCoding — {lang === 'zh' ? '让 AI 像猫咪团队一样协作写代码' : 'Let AI cats collaborate like a dev team'}</p>
       <p style="margin-top: 8px;">
         <a href="https://github.com/zocs/catcoding">GitHub</a>
         &nbsp;·&nbsp;
-        <a href="https://demo.catcoding.org">Live Demo</a>
+        <a href="https://demo.catcoding.org">{lang === 'zh' ? '在线演示' : 'Live Demo'}</a>
         &nbsp;·&nbsp;
-        <a href="https://github.com/zocs/catcoding/blob/main/docs">Documentation</a>
+        <a href="https://github.com/zocs/catcoding/blob/main/docs">{lang === 'zh' ? '文档' : 'Documentation'}</a>
         &nbsp;·&nbsp;
         <a href="https://github.com/zocs/catcoding/blob/main/LICENSE">MIT License</a>
       </p>
