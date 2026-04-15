@@ -18,9 +18,11 @@ const langDesc = lang === 'zh' ? '让 AI 像猫咪团队一样协作写代码' :
   <meta name="description" content={langDesc} />
   <title>{title} — CatCoding</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <style>body { cursor: none !important; } a, button { cursor: none !important; }</style>
 </head>
 <body>
   <slot />
+  <script src="/cat-hunt.js" is:inline></script>
   <footer>
     <div class="container">
       <p>🐱 CatCoding — {lang === 'zh' ? '让 AI 像猫咪团队一样协作写代码' : 'Let AI cats collaborate like a dev team'}</p>
