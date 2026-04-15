@@ -94,182 +94,308 @@
     c.restore()
   }
 
-  // ═══ 绘制猫咪 ═══
+  // ═══ 绘制猫咪（改进版：渐变毛色 + 虎斑纹 + 毛绒感） ═══
+  // 颜色系统
+  const COL = {
+    body:     '#f5a623',  // 橘猫主色
+    bodyDark: '#d4881a',  // 暗部
+    bodyLight:'#ffb84d',  // 亮部
+    belly:    '#ffe0b2',  // 肚皮
+    bellyEdge:'#ffd08a',  // 肚皮边缘
+    nose:     '#e88888',  // 鼻子
+    noseDk:   '#cc6666',  // 鼻子暗部
+    innerEar: '#ffaaaa',  // 耳内
+    innerEarDk:'#ee8888',
+    eyeWhite: '#fefefe',  // 眼白（微黄白，更自然）
+    iris:     '#4a7c2e',  // 虹膜（猫绿）
+    irisRing: '#2d5a16',  // 虹膜外环
+    pupil:    '#111111',  // 瞳孔
+    pupilHi:  '#ffffff',  // 瞳孔高光
+    whisker:  '#bbbbbb',  // 胡须
+    stripe:   '#c87818',  // 虎斑纹
+    shadow:   'rgba(0,0,0,0.08)', // 投影
+  }
+
   function drawCat(c) {
     c.save()
     c.translate(cat.x, cat.y)
     c.scale(cat.facing, 1)
 
     const s = cat.size
-    const breathe = Math.sin(cat.breathPhase) * 2
+    const breathe = Math.sin(cat.breathPhase) * 1.5
     const crouchY = cat.crouch * s * 0.3
-    const squish = cat.state === 'catching' ? 0.85 : 1 // 抓到瞬间挤压
+    const squish = cat.state === 'catching' ? 0.88 : 1
 
-    // 尾巴
+    // ── 阴影（脚下投影）──
+    c.fillStyle = COL.shadow
+    c.beginPath()
+    c.ellipse(0, s * 0.52, s * 0.45, s * 0.06, 0, 0, Math.PI * 2)
+    c.fill()
+
+    // ── 尾巴（多段渐变，毛茸茸感）──
     c.save()
-    c.translate(-s * 0.6, -s * 0.1 + crouchY)
-    c.strokeStyle = '#f5a623'; c.lineWidth = s * 0.12; c.lineCap = 'round'
-    const tailWave = Math.sin(cat.tailAngle) * 0.4
-    c.beginPath(); c.moveTo(0, 0)
-    c.quadraticCurveTo(-s * 0.4, -s * 0.3 + tailWave * s, -s * 0.2, -s * 0.6 + Math.sin(cat.tailAngle + 1) * s * 0.15)
-    c.stroke()
+    c.translate(-s * 0.55, -s * 0.05 + crouchY)
+    const tailWave = Math.sin(cat.tailAngle) * 0.35
+    const tailWave2 = Math.sin(cat.tailAngle + 0.8) * 0.2
+    // 三层尾巴（从粗到细，从深到浅）
+    for (let layer = 0; layer < 3; layer++) {
+      const w = s * (0.14 - layer * 0.03)
+      const alpha = 1 - layer * 0.15
+      c.strokeStyle = layer === 0 ? COL.bodyDark : (layer === 1 ? COL.body : COL.bodyLight)
+      c.lineWidth = w; c.lineCap = 'round'; c.globalAlpha = alpha
+      c.beginPath(); c.moveTo(0, 0)
+      c.bezierCurveTo(
+        -s * 0.25, -s * 0.15 + tailWave * s,
+        -s * 0.35, -s * 0.45 + tailWave2 * s,
+        -s * 0.15 + Math.sin(cat.tailAngle + 1.5) * s * 0.12, -s * 0.65
+      )
+      c.stroke()
+    }
+    c.globalAlpha = 1
     c.restore()
 
-    // 身体
-    c.fillStyle = '#f5a623'
+    // ── 身体（渐变填充）──
+    const bodyGrad = c.createRadialGradient(s * 0.08, s * 0.08 + crouchY, s * 0.1, 0, s * 0.15 + crouchY, s * 0.5)
+    bodyGrad.addColorStop(0, COL.bodyLight)
+    bodyGrad.addColorStop(0.5, COL.body)
+    bodyGrad.addColorStop(1, COL.bodyDark)
+    c.fillStyle = bodyGrad
     c.beginPath()
     c.ellipse(0, s * 0.15 + crouchY, s * 0.5, s * 0.35 * squish, 0, 0, Math.PI * 2)
     c.fill()
 
-    // 前爪
-    const pawExtend = cat.state === 'pouncing' ? cat.pounceCharge * s * 0.3 : 0
-    for (const side of [-1, 1]) {
-      c.fillStyle = '#e09020'
-      c.beginPath()
-      c.ellipse(side * s * 0.3, s * 0.4 + crouchY + pawExtend * 0.3, s * 0.1, s * 0.08, side * 0.2, 0, Math.PI * 2)
-      c.fill()
-      // 肉垫
-      c.fillStyle = '#d48060'
-      c.beginPath()
-      c.ellipse(side * s * 0.3, s * 0.42 + crouchY + pawExtend * 0.3, s * 0.06, s * 0.04, 0, 0, Math.PI * 2)
-      c.fill()
-    }
-
-    // 后爪（蹲伏时可见）
-    if (cat.crouch > 0.3) {
-      c.fillStyle = '#e09020'
-      for (const side of [-1, 1]) {
-        c.beginPath()
-        c.ellipse(side * s * 0.2, s * 0.45 + crouchY, s * 0.12, s * 0.08, 0, 0, Math.PI * 2)
-        c.fill()
-      }
-    }
-
-    // 头
-    const headY = -s * 0.25 + crouchY + breathe
-    c.fillStyle = '#f5a623'
-    c.beginPath(); c.arc(0, headY, s * 0.38, 0, Math.PI * 2); c.fill()
-
-    // 耳朵
-    const earW = Math.sin(cat.earAngle) * 0.12
-    for (const side of [-1, 1]) {
-      c.save()
-      c.translate(side * s * 0.28, headY - s * 0.3)
-      c.rotate(side * (-0.15 + earW * side))
-      c.beginPath()
-      c.moveTo(0, 0)
-      c.lineTo(side * s * 0.15, -s * 0.3)
-      c.lineTo(-side * s * 0.08, -s * 0.05)
-      c.closePath()
-      c.fill()
-      // 耳内
-      c.fillStyle = '#ffb8b8'
-      c.beginPath()
-      c.moveTo(side * s * 0.02, -s * 0.05)
-      c.lineTo(side * s * 0.1, -s * 0.22)
-      c.lineTo(-side * s * 0.03, -s * 0.05)
-      c.closePath()
-      c.fill()
-      c.fillStyle = '#f5a623'
-      c.restore()
-    }
-
-    // 眼睛
-    const eyeY = headY - s * 0.05
-    const eyeSpacing = s * 0.16
-    if (cat.eyeOpen > 0.1) {
-      // 眼白
-      c.fillStyle = '#fff'
-      for (const side of [-1, 1]) {
-        c.beginPath()
-        c.ellipse(side * eyeSpacing, eyeY, s * 0.1 * cat.eyeOpen, s * 0.09 * cat.eyeOpen, 0, 0, Math.PI * 2)
-        c.fill()
-      }
-      // 瞳孔（追踪鼠标）
-      c.fillStyle = '#222'
-      for (const side of [-1, 1]) {
-        c.beginPath()
-        c.ellipse(
-          side * eyeSpacing + cat.pupilDx * s * 0.03,
-          eyeY + cat.pupilDy * s * 0.03,
-          s * 0.05 * cat.eyeOpen, s * 0.07 * cat.eyeOpen,
-          0, 0, Math.PI * 2
-        )
-        c.fill()
-      }
-      // 高光
-      c.fillStyle = '#fff'
-      for (const side of [-1, 1]) {
-        c.beginPath()
-        c.arc(side * eyeSpacing + s * 0.03, eyeY - s * 0.03, s * 0.022, 0, Math.PI * 2)
-        c.fill()
-      }
-    } else {
-      // 闭眼 — 弯曲线
-      c.strokeStyle = '#333'; c.lineWidth = s * 0.03; c.lineCap = 'round'
-      for (const side of [-1, 1]) {
-        c.beginPath()
-        c.arc(side * eyeSpacing, eyeY, s * 0.06, 0.1, Math.PI - 0.1)
-        c.stroke()
-      }
-    }
-
-    // 鼻子
-    c.fillStyle = '#e57373'
-    c.beginPath()
-    c.moveTo(0, headY + s * 0.05)
-    c.lineTo(-s * 0.04, headY); c.lineTo(s * 0.04, headY)
-    c.closePath(); c.fill()
-
-    // 嘴巴
-    c.strokeStyle = '#666'; c.lineWidth = s * 0.02; c.lineCap = 'round'
-    if (cat.state === 'victory') {
-      // 开心大嘴
-      c.fillStyle = '#e57373'
-      c.beginPath()
-      c.arc(0, headY + s * 0.12, s * 0.1, 0, Math.PI)
-      c.fill()
-      // 舌头
-      c.fillStyle = '#ff8a8a'
-      c.beginPath()
-      c.ellipse(s * 0.02, headY + s * 0.16, s * 0.05, s * 0.04, 0, 0, Math.PI)
-      c.fill()
-    } else if (cat.state === 'pouncing') {
-      // 专注 — 嘴巴紧闭
-      c.beginPath()
-      c.moveTo(-s * 0.06, headY + s * 0.1)
-      c.lineTo(s * 0.06, headY + s * 0.1)
-      c.stroke()
-    } else {
-      // 正常微笑
-      c.beginPath()
-      c.moveTo(-s * 0.07, headY + s * 0.08)
-      c.quadraticCurveTo(-s * 0.03, headY + s * 0.15, 0, headY + s * 0.1)
-      c.stroke()
-      c.beginPath()
-      c.moveTo(0, headY + s * 0.1)
-      c.quadraticCurveTo(s * 0.03, headY + s * 0.15, s * 0.07, headY + s * 0.08)
+    // ── 虎斑纹（身体）──
+    c.strokeStyle = COL.stripe; c.lineWidth = s * 0.025; c.lineCap = 'round'; c.globalAlpha = 0.35
+    // 背部 M 形条纹
+    for (let i = -2; i <= 2; i++) {
+      const sx = i * s * 0.12
+      const sy = s * 0.08 + crouchY
+      c.beginPath(); c.moveTo(sx - s * 0.04, sy - s * 0.06)
+      c.quadraticCurveTo(sx, sy + s * 0.02, sx + s * 0.04, sy - s * 0.06)
       c.stroke()
     }
+    c.globalAlpha = 1
 
-    // 胡须（带抖动）
-    c.strokeStyle = '#ccc'; c.lineWidth = s * 0.012
-    const wTwitch = Math.sin(cat.whiskerTwitch) * s * 0.02
-    for (const side of [-1, 1]) {
-      for (let j = 0; j < 3; j++) {
-        const ang = (j - 1) * 0.18
-        c.beginPath()
-        c.moveTo(side * s * 0.18, headY + s * 0.04 + j * s * 0.02)
-        c.lineTo(side * s * 0.5, headY + s * (0.02 + ang) + wTwitch * (j - 1))
-        c.stroke()
-      }
-    }
-
-    // 肚皮
-    c.fillStyle = '#ffe0b2'
+    // ── 肚皮（椭圆渐变）──
+    const bellyGrad = c.createRadialGradient(0, s * 0.22 + crouchY, 0, 0, s * 0.2 + crouchY, s * 0.32)
+    bellyGrad.addColorStop(0, COL.belly)
+    bellyGrad.addColorStop(0.8, COL.bellyEdge)
+    bellyGrad.addColorStop(1, COL.body)
+    c.fillStyle = bellyGrad
     c.beginPath()
     c.ellipse(0, s * 0.2 + crouchY, s * 0.3, s * 0.2 * squish, 0, 0, Math.PI * 2)
     c.fill()
+
+    // ── 前爪（带肉垫细节）──
+    const pawExtend = cat.state === 'pouncing' ? cat.pounceCharge * s * 0.3 : 0
+    for (const side of [-1, 1]) {
+      // 爪子主体（渐变）
+      const px = side * s * 0.3
+      const py = s * 0.42 + crouchY + pawExtend * 0.3
+      const pawGrad = c.createRadialGradient(px, py, 0, px, py, s * 0.12)
+      pawGrad.addColorStop(0, COL.body)
+      pawGrad.addColorStop(1, COL.bodyDark)
+      c.fillStyle = pawGrad
+      c.beginPath()
+      c.ellipse(px, py, s * 0.1, s * 0.08, side * 0.2, 0, Math.PI * 2)
+      c.fill()
+
+      // 肉垫（三瓣）
+      c.fillStyle = '#d48060'
+      c.beginPath(); c.ellipse(px, py + s * 0.02, s * 0.045, s * 0.03, 0, 0, Math.PI * 2); c.fill()
+      c.fillStyle = '#cc7755'
+      c.beginPath(); c.arc(px - s * 0.04, py - s * 0.03, s * 0.022, 0, Math.PI * 2); c.fill()
+      c.beginPath(); c.arc(px + s * 0.04, py - s * 0.03, s * 0.022, 0, Math.PI * 2); c.fill()
+    }
+
+    // ── 后爪（蹲伏时可见）──
+    if (cat.crouch > 0.3) {
+      for (const side of [-1, 1]) {
+        c.fillStyle = COL.bodyDark
+        c.beginPath()
+        c.ellipse(side * s * 0.2, s * 0.45 + crouchY, s * 0.12, s * 0.07, 0, 0, Math.PI * 2)
+        c.fill()
+      }
+    }
+
+    // ── 头部（渐变）──
+    const headY = -s * 0.25 + crouchY + breathe
+    const headGrad = c.createRadialGradient(s * 0.06, headY - s * 0.06, s * 0.05, 0, headY, s * 0.42)
+    headGrad.addColorStop(0, COL.bodyLight)
+    headGrad.addColorStop(0.5, COL.body)
+    headGrad.addColorStop(1, COL.bodyDark)
+    c.fillStyle = headGrad
+    c.beginPath(); c.arc(0, headY, s * 0.38, 0, Math.PI * 2); c.fill()
+
+    // ── 额头虎斑纹 ──
+    c.strokeStyle = COL.stripe; c.lineWidth = s * 0.022; c.globalAlpha = 0.4; c.lineCap = 'round'
+    // 额头 M 纹
+    const mY = headY - s * 0.18
+    c.beginPath()
+    c.moveTo(-s * 0.15, mY + s * 0.05)
+    c.quadraticCurveTo(-s * 0.08, mY - s * 0.06, 0, mY + s * 0.02)
+    c.quadraticCurveTo(s * 0.08, mY - s * 0.06, s * 0.15, mY + s * 0.05)
+    c.stroke()
+    // 竖线
+    c.beginPath(); c.moveTo(0, mY + s * 0.02); c.lineTo(0, mY + s * 0.12); c.stroke()
+    c.globalAlpha = 1
+
+    // ── 耳朵（更圆润，有内耳渐变）──
+    const earW = Math.sin(cat.earAngle) * 0.1
+    for (const side of [-1, 1]) {
+      c.save()
+      c.translate(side * s * 0.26, headY - s * 0.3)
+      c.rotate(side * (-0.12 + earW * side))
+
+      // 外耳
+      c.fillStyle = COL.body
+      c.beginPath()
+      c.moveTo(-side * s * 0.02, s * 0.02)
+      c.quadraticCurveTo(side * s * 0.12, -s * 0.32, side * s * 0.18, -s * 0.05)
+      c.quadraticCurveTo(side * s * 0.05, s * 0.02, -side * s * 0.02, s * 0.02)
+      c.fill()
+
+      // 内耳（渐变粉）
+      const earInnerGrad = c.createLinearGradient(0, -s * 0.22, 0, s * 0.02)
+      earInnerGrad.addColorStop(0, COL.innerEar)
+      earInnerGrad.addColorStop(1, COL.innerEarDk)
+      c.fillStyle = earInnerGrad
+      c.beginPath()
+      c.moveTo(-side * s * 0.01, s * 0.01)
+      c.quadraticCurveTo(side * s * 0.08, -s * 0.22, side * s * 0.13, -s * 0.02)
+      c.quadraticCurveTo(side * s * 0.03, s * 0.01, -side * s * 0.01, s * 0.01)
+      c.fill()
+
+      c.restore()
+    }
+
+    // ── 眼睛（虹膜 + 瞳孔 + 高光，更逼真）──
+    const eyeY = headY - s * 0.04
+    const eyeSpacing = s * 0.15
+    if (cat.eyeOpen > 0.1) {
+      const eyeR = s * 0.1 * cat.eyeOpen
+      const eyeRy = s * 0.09 * cat.eyeOpen
+
+      for (const side of [-1, 1]) {
+        const ex = side * eyeSpacing
+
+        // 眼白
+        c.fillStyle = COL.eyeWhite
+        c.beginPath(); c.ellipse(ex, eyeY, eyeR, eyeRy, 0, 0, Math.PI * 2); c.fill()
+
+        // 虹膜（渐变绿）
+        const irisGrad = c.createRadialGradient(ex, eyeY, 0, ex, eyeY, eyeR * 0.7)
+        irisGrad.addColorStop(0, COL.iris)
+        irisGrad.addColorStop(0.7, COL.irisRing)
+        irisGrad.addColorStop(1, COL.pupil)
+        c.fillStyle = irisGrad
+        c.beginPath(); c.arc(ex, eyeY, eyeR * 0.65, 0, Math.PI * 2); c.fill()
+
+        // 瞳孔（竖瞳 — 猫的特征！）
+        c.fillStyle = COL.pupil
+        c.beginPath()
+        c.ellipse(
+          ex + cat.pupilDx * s * 0.02,
+          eyeY + cat.pupilDy * s * 0.02,
+          s * 0.018 * cat.eyeOpen,  // 窄
+          s * 0.06 * cat.eyeOpen,   // 长
+          0, 0, Math.PI * 2
+        )
+        c.fill()
+
+        // 高光（大+小，更生动）
+        c.fillStyle = COL.pupilHi
+        c.beginPath(); c.arc(ex + s * 0.025, eyeY - s * 0.025, s * 0.025, 0, Math.PI * 2); c.fill()
+        c.globalAlpha = 0.6
+        c.beginPath(); c.arc(ex - s * 0.015, eyeY + s * 0.02, s * 0.012, 0, Math.PI * 2); c.fill()
+        c.globalAlpha = 1
+
+        // 眼睛轮廓（轻微深色描边）
+        c.strokeStyle = COL.bodyDark; c.lineWidth = s * 0.015
+        c.beginPath(); c.ellipse(ex, eyeY, eyeR, eyeRy, 0, 0, Math.PI * 2); c.stroke()
+      }
+    } else {
+      // 闭眼 — 柔和弧线
+      c.strokeStyle = COL.stripe; c.lineWidth = s * 0.025; c.lineCap = 'round'
+      for (const side of [-1, 1]) {
+        c.beginPath()
+        c.arc(side * eyeSpacing, eyeY, s * 0.055, 0.15, Math.PI - 0.15)
+        c.stroke()
+      }
+    }
+
+    // ── 鼻子（更立体）──
+    const noseY = headY + s * 0.06
+    // 鼻梁暗部
+    c.fillStyle = COL.noseDk
+    c.beginPath()
+    c.moveTo(0, noseY - s * 0.01)
+    c.lineTo(-s * 0.035, noseY + s * 0.02); c.lineTo(s * 0.035, noseY + s * 0.02)
+    c.closePath(); c.fill()
+    // 鼻尖亮部
+    c.fillStyle = COL.nose
+    c.beginPath()
+    c.moveTo(0, noseY)
+    c.lineTo(-s * 0.028, noseY + s * 0.015); c.lineTo(s * 0.028, noseY + s * 0.015)
+    c.closePath(); c.fill()
+    // 鼻孔
+    c.fillStyle = COL.noseDk
+    c.beginPath(); c.ellipse(-s * 0.012, noseY + s * 0.01, s * 0.008, s * 0.005, 0, 0, Math.PI * 2); c.fill()
+    c.beginPath(); c.ellipse(s * 0.012, noseY + s * 0.01, s * 0.008, s * 0.005, 0, 0, Math.PI * 2); c.fill()
+
+    // ── 嘴巴（更自然）──
+    const mouthY = noseY + s * 0.02
+    c.strokeStyle = COL.stripe; c.lineWidth = s * 0.018; c.lineCap = 'round'
+    if (cat.state === 'victory') {
+      // 开心大嘴（更圆润）
+      c.fillStyle = '#cc5555'
+      c.beginPath()
+      c.arc(0, mouthY + s * 0.06, s * 0.09, 0.05, Math.PI - 0.05)
+      c.fill()
+      // 舌头
+      c.fillStyle = '#ff7777'
+      c.beginPath()
+      c.ellipse(0, mouthY + s * 0.11, s * 0.045, s * 0.035, 0, Math.PI, Math.PI * 2)
+      c.fill()
+      // 舌头中线
+      c.strokeStyle = '#ee5555'; c.lineWidth = s * 0.008
+      c.beginPath(); c.moveTo(0, mouthY + s * 0.08); c.lineTo(0, mouthY + s * 0.14); c.stroke()
+    } else if (cat.state === 'pouncing') {
+      // 专注 — 微张嘴
+      c.fillStyle = '#aa4444'
+      c.beginPath(); c.ellipse(0, mouthY + s * 0.05, s * 0.04, s * 0.02, 0, 0, Math.PI * 2); c.fill()
+    } else {
+      // 正常 — 猫嘴（W 形）
+      c.beginPath()
+      c.moveTo(-s * 0.06, mouthY + s * 0.03)
+      c.quadraticCurveTo(-s * 0.02, mouthY + s * 0.08, 0, mouthY + s * 0.04)
+      c.stroke()
+      c.beginPath()
+      c.moveTo(0, mouthY + s * 0.04)
+      c.quadraticCurveTo(s * 0.02, mouthY + s * 0.08, s * 0.06, mouthY + s * 0.03)
+      c.stroke()
+    }
+
+    // ── 胡须（更粗更自然，有弯曲）──
+    const wTwitch = Math.sin(cat.whiskerTwitch) * s * 0.015
+    c.lineWidth = s * 0.015; c.lineCap = 'round'
+    for (const side of [-1, 1]) {
+      for (let j = 0; j < 3; j++) {
+        const baseY = mouthY - s * 0.01 + j * s * 0.025
+        const tipY = baseY + (j - 1) * s * 0.04 + wTwitch * (j - 1)
+        const len = s * (0.35 + j * 0.05)
+        c.strokeStyle = j === 1 ? COL.whisker : '#aaaaaa'
+        c.globalAlpha = 0.7
+        c.beginPath()
+        c.moveTo(side * s * 0.15, baseY)
+        c.quadraticCurveTo(
+          side * s * 0.28, tipY - s * 0.02,
+          side * len, tipY
+        )
+        c.stroke()
+      }
+    }
+    c.globalAlpha = 1
 
     c.restore()
   }
