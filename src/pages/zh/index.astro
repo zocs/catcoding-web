@@ -4,62 +4,105 @@ const lang = 'zh';
 ---
 <Base title="首页" lang={lang}>
   <nav class="lang-switch">
-    <a href="/en/">EN</a>
+    <a href="/">EN</a>
     <span>|</span>
-    <a href="/zh/" class="active">中文</a>
+    <a href="/zh/" class="active">中</a>
   </nav>
 
   <section class="hero">
     <div class="hero-content">
-      <h1>🐱 CatCoding</h1>
-      <p class="tagline">让 AI 像猫咪团队一样协作写代码</p>
+      <h1 class="hero-title">CatCoding</h1>
+      <p class="hero-tagline">让 AI 像猫咪团队一样协作写代码。<br/>Rust 守护进程 + Python Agent + Vue 看板。</p>
+
       <div class="badge-row">
-        <span class="badge rust">🦀 Rust 守护进程</span>
-        <span class="badge python">🐍 Python Agent</span>
-        <span class="badge vue">💚 Vue 3 看板</span>
+        <span class="badge rust">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          Rust 守护进程
+        </span>
+        <span class="badge python">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a5 5 0 0 0-5 5v2h10V7a5 5 0 0 0-5-5z"/><rect x="3" y="9" width="18" height="13" rx="2"/></svg>
+          Python Agent
+        </span>
+        <span class="badge vue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg>
+          Vue 3 看板
+        </span>
       </div>
+
       <div class="cta-row">
-        <a href="https://demo.catcoding.org" class="btn btn-primary">🎮 在线演示</a>
-        <a href="https://github.com/zocs/catcoding" class="btn btn-secondary">⭐ GitHub Star</a>
-        <a href="#quickstart" class="btn btn-secondary">🚀 快速开始</a>
+        <a href="https://demo.catcoding.org" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          在线演示
+        </a>
+        <a href="https://github.com/zocs/catcoding" class="btn btn-secondary">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          Star on GitHub
+        </a>
+        <a href="#quickstart" class="btn btn-secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          快速开始
+        </a>
+      </div>
+
+      <div class="palette-row" style="justify-content: center; margin-top: 32px;">
+        <div class="palette-dot" style="background: #0F172A;" title="Background"></div>
+        <div class="palette-dot" style="background: #1E293B;" title="Primary"></div>
+        <div class="palette-dot" style="background: #22C55E;" title="Accent Green"></div>
+        <div class="palette-dot" style="background: #F97316;" title="Orange"></div>
+        <div class="palette-dot" style="background: #3B82F6;" title="Blue"></div>
+        <div class="palette-dot" style="background: #F8FAFC;" title="Foreground"></div>
       </div>
     </div>
   </section>
 
   <section id="features">
     <div class="container">
-      <h2 class="section-title">✨ 核心特性</h2>
-      <p class="section-subtitle">独立于任何 AI agent 框架的多 Agent 协同开发框架</p>
+      <p class="section-label">特性</p>
+      <h2 class="section-title">多 Agent 协同开发所需的一切</h2>
+      <p class="section-subtitle">独立于任何 AI agent 框架，猫咪主题 Agent、实时监控、可插拔 Adapter。</p>
+
       <div class="features-grid">
         <div class="feature-card">
-          <div class="icon">🐱</div>
-          <h3>猫咪形象系统</h3>
-          <p>每个 Agent 都有独特的猫咪角色 — PM 是暹罗猫，Dev 是英短蓝猫，Reviewer 是玄猫</p>
-        </div>
-        <div class="feature-card">
-          <div class="icon">🦉</div>
+          <div class="feature-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M12 6v6l4 2"/></svg>
+          </div>
           <h3>Watchdog 守护</h3>
           <p>三重检测：心跳超时 + 编译检查 + API 调用追踪，自动恢复故障 Agent</p>
         </div>
         <div class="feature-card">
-          <div class="icon">📋</div>
+          <div class="feature-icon orange">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </div>
           <h3>可视化看板</h3>
           <p>Vue 3 实时看板 — 拖拽任务、甘特图、Agent 状态监控、Bug 抓捕动画</p>
         </div>
         <div class="feature-card">
-          <div class="icon">🔄</div>
+          <div class="feature-icon blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
           <h3>多 Adapter 支持</h3>
-          <p>Adapter 接口即插即用 — Hermes、Claude Code、Codex，统一编排调度</p>
+          <p>Hermes、Claude Code、Codex、OpenClaw — 统一编排调度</p>
         </div>
         <div class="feature-card">
-          <div class="icon">🧠</div>
+          <div class="feature-icon purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
           <h3>L4 记忆系统</h3>
           <p>四层分级记忆：L1 索引 → L2 事实 → L3 技能 → L4 会话，自动学习与技能结晶</p>
         </div>
         <div class="feature-card">
-          <div class="icon">🐛</div>
-          <h3>Bug = 老鼠</h3>
-          <p>有趣的 Bug 分级系统 — 抓住老鼠就是抓住 Bug，让开发过程不再枯燥</p>
+          <div class="feature-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+          </div>
+          <h3>猫咪形象系统</h3>
+          <p>每个 Agent 有独特猫咪角色 — PM 暹罗猫、Dev 英短蓝猫、Reviewer 玄猫</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon orange">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <h3>NATS 消息总线</h3>
+          <p>Rust 守护进程 + NATS JetStream，持久化流、Pub/Sub、心跳通道</p>
         </div>
       </div>
     </div>
@@ -67,8 +110,8 @@ const lang = 'zh';
 
   <section id="architecture">
     <div class="container">
-      <h2 class="section-title">🏗️ 架构</h2>
-      <p class="section-subtitle">Rust 高性能核心 + Python 灵活 Agent + Vue 前端</p>
+      <p class="section-label">架构</p>
+      <h2 class="section-title">Rust 核心 + Python Agent + Vue 前端</h2>
       <div class="arch-diagram">┌──────────────────────────────────────────────────┐
 │                      用户层                       │
 │          Dashboard (Vue 3)           CLI          │
@@ -95,9 +138,9 @@ const lang = 'zh';
 
   <section id="quickstart">
     <div class="container">
-      <h2 class="section-title">🚀 快速开始</h2>
-      <p class="section-subtitle">三步启动你的猫咪开发团队</p>
-      <div style="max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
+      <p class="section-label">快速开始</p>
+      <h2 class="section-title">三步启动猫咪开发团队</h2>
+      <div style="max-width: 700px; margin-top: 32px; display: flex; flex-direction: column; gap: 16px;">
         <div class="code-block">
           <span class="comment"># 1. 安装</span><br/>
           <span class="cmd">curl</span> <span class="flag">-fsSL</span> https://catcoding.org/install.sh | <span class="cmd">bash</span>

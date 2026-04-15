@@ -18,15 +18,17 @@ const langDesc = lang === 'zh' ? '让 AI 像猫咪团队一样协作写代码' :
   <meta name="description" content={langDesc} />
   <title>{title} — CatCoding</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <style>body { cursor: none !important; } a, button { cursor: none !important; }</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
   <slot />
   <script src="/cat-hunt.js" is:inline></script>
   <footer>
     <div class="container">
-      <p>🐱 CatCoding — {lang === 'zh' ? '让 AI 像猫咪团队一样协作写代码' : 'Let AI cats collaborate like a dev team'}</p>
-      <p style="margin-top: 8px;">
+      <p>CatCoding — {lang === 'zh' ? '让 AI 像猫咪团队一样协作写代码' : 'Let AI cats collaborate like a dev team'}</p>
+      <p style="margin-top: 12px;">
         <a href="https://github.com/zocs/catcoding">GitHub</a>
         &nbsp;·&nbsp;
         <a href="https://demo.catcoding.org">{lang === 'zh' ? '在线演示' : 'Live Demo'}</a>
@@ -35,7 +37,6 @@ const langDesc = lang === 'zh' ? '让 AI 像猫咪团队一样协作写代码' :
         &nbsp;·&nbsp;
         <a href="https://github.com/zocs/catcoding/blob/main/LICENSE">MIT License</a>
       </p>
-      <p style="margin-top: 12px; font-size: 0.8rem;">Built with 🧡 and too many cats</p>
     </div>
   </footer>
 </body>
