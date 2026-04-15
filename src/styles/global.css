@@ -395,8 +395,8 @@ footer a:hover { color: var(--color-accent); }
   background: radial-gradient(circle, rgba(22,163,74,0.08) 0%, transparent 60%);
 }
 [data-theme="light"] .hero-title {
-  background: linear-gradient(135deg, #1E293B 0%, #16A34A 60%, #F97316 100%);
-  -webkit-text-fill-color: transparent;
+  background: none;
+  -webkit-text-fill-color: var(--color-foreground);
 }
 [data-theme="light"] .feature-icon.green { background: linear-gradient(135deg, rgba(22,163,74,0.15), rgba(22,163,74,0.05)); }
 [data-theme="light"] .feature-icon.orange { background: linear-gradient(135deg, rgba(249,115,22,0.15), rgba(249,115,22,0.05)); }
