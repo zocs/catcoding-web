@@ -9,6 +9,9 @@
  */
 
 ;(function () {
+  // Respect prefers-reduced-motion
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
   const canvas = document.createElement('canvas')
   canvas.id = 'cat-hunt-canvas'
   Object.assign(canvas.style, {
@@ -19,7 +22,7 @@
   document.body.prepend(canvas)
   const ctx = canvas.getContext('2d')
 
-  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight }
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; cat.homeY = canvas.height - 120 }
   resize()
   window.addEventListener('resize', resize)
 
