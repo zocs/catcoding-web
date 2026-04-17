@@ -487,14 +487,27 @@
   }
 
   // ═══ 状态文字 ═══
+  function getPageLang() {
+    const lang = document.documentElement.lang || ''
+    return lang.startsWith('zh') ? 'zh' : 'en'
+  }
+
   function drawStateLabel(c) {
-    const labels = {
+    const lang = getPageLang()
+    const labels = lang === 'zh' ? {
       idle: '',
       stalking: '🐾 悄悄靠近...',
       pouncing: '⚡ 蓄力中...',
       catching: '💨 扑！！',
       victory: '🎉 抓到了！',
       returning: '🚶 回家...',
+    } : {
+      idle: '',
+      stalking: '🐾 Stalking...',
+      pouncing: '⚡ Charging...',
+      catching: '💨 POUNCE!',
+      victory: '🎉 Caught it!',
+      returning: '🚶 Going home...',
     }
     const label = labels[cat.state]
     if (!label) return
