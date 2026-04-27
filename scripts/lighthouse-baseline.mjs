@@ -49,7 +49,10 @@ function assertThreshold(route, score) {
 
 let serverProcess;
 try {
-  await run('npm', ['run', 'build']);
+  const skipBuild = process.env.LH_SKIP_BUILD === '1';
+  if (!skipBuild) {
+    await run('npm', ['run', 'build']);
+  }
 
   serverProcess = spawn('npx', ['--yes', 'http-server', 'dist', '-p', '4321'], {
     cwd,
