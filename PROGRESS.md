@@ -3,7 +3,7 @@
 > 仓库：`/home/zocs/Devs/catcoding-web`
 > 用途：记录执行复盘、计划更新与下一轮任务
 
-## 当前状态（2026-04-28 01:32 CST）
+## 当前状态（2026-04-28 01:37 CST）
 
 - 站点框架：Astro 6，双语页面（`/` + `/zh/`）
 - 质量门禁：`npm run ci` 通过（`astro check` + `astro build`）
@@ -129,6 +129,12 @@
 - `push/pull_request` 新增 `paths-ignore: PROGRESS.md`（纯计划文档更新不触发 CI）
 - 预期收益：减少 CI 资源浪费与“短时间多次 CI”风险
 
+## 本轮执行复盘（2026-04-28 凌晨第 16 轮）
+
+- code review：CI 缓存策略可再收敛，显式 lockfile 路径更稳
+- 实施：`ci-quality.yml` 的 `setup-node` 增加 `cache-dependency-path: package-lock.json`
+- 预期收益：runner 缓存命中更稳定，降低安装阶段耗时抖动
+
 ## 强制环节（与主仓库对齐）
 
 每轮自动推进必须执行：
@@ -141,5 +147,5 @@
 ## 下一轮候选
 
 1. 视图扩展后同步验证 sitemap 自动生成覆盖率
-2. 评估在 CI 中缓存 `node_modules` 与 Lighthouse 依赖以缩短总时长
-3. 观察一段时间后再评估是否将 `master` 性能阈值提升到 98
+2. 观察一段时间后再评估是否将 `master` 性能阈值提升到 98
+3. 若 CI 时长仍偏高，再评估把 `audit:lighthouse` 拆为独立 nightly workflow
