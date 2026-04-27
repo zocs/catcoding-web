@@ -54,7 +54,7 @@ try {
     await run('npm', ['run', 'build']);
   }
 
-  serverProcess = spawn('npx', ['--yes', 'http-server', 'dist', '-p', '4321'], {
+  serverProcess = spawn('npx', ['--no-install', 'http-server', 'dist', '-p', '4321'], {
     cwd,
     stdio: 'inherit',
     env: process.env,
@@ -63,7 +63,7 @@ try {
 
   const runLighthouse = async (url, outputPath) => {
     await run('npx', [
-      '--yes',
+      '--no-install',
       'lighthouse',
       url,
       '--quiet',
