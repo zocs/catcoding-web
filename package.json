@@ -10,7 +10,8 @@
     "check": "astro check",
     "gen:sitemap": "node scripts/gen-sitemap.mjs",
     "audit:lighthouse": "node scripts/lighthouse-baseline.mjs",
-    "ci": "npm run check && npm run build"
+    "ci": "npm run check && npm run build",
+    "ci:quality": "npm run ci && npm run audit:lighthouse"
   },
   "dependencies": {
     "astro": "^6.1.9"

@@ -31,6 +31,22 @@ const reportPaths = {
   zh: path.join(tempDir, 'zh.json'),
 };
 
+const thresholds = {
+  performance: Number(process.env.LH_MIN_PERFORMANCE ?? 85),
+  accessibility: Number(process.env.LH_MIN_ACCESSIBILITY ?? 90),
+  bestPractices: Number(process.env.LH_MIN_BEST_PRACTICES ?? 90),
+  seo: Number(process.env.LH_MIN_SEO ?? 100),
+};
+
+function assertThreshold(route, score) {
+  const failures = Object.entries(thresholds)
+    .filter(([k, min]) => score[k] < min)
+    .map(([k, min]) => `${k}=${score[k]} < ${min}`);
+  if (failures.length > 0) {
+    throw new Error(`Lighthouse threshold failed for ${route}: ${failures.join(', ')}`);
+  }
+}
+
 let serverProcess;
 try {
   await run('npm', ['run', 'build']);
@@ -75,6 +91,12 @@ try {
   console.log('\nLighthouse baseline (mobile):');
   console.log(`- /    : P ${home.performance} | A11y ${home.accessibility} | BP ${home.bestPractices} | SEO ${home.seo}`);
   console.log(`- /zh/ : P ${zh.performance} | A11y ${zh.accessibility} | BP ${zh.bestPractices} | SEO ${zh.seo}`);
+  console.log(
+    `Thresholds: P>=${thresholds.performance}, A11y>=${thresholds.accessibility}, BP>=${thresholds.bestPractices}, SEO>=${thresholds.seo}`
+  );
+
+  assertThreshold('/', home);
+  assertThreshold('/zh/', zh);
 } finally {
   if (serverProcess && !serverProcess.killed) {
     serverProcess.kill('SIGINT');
