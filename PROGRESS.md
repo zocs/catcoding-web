@@ -3,7 +3,7 @@
 > 仓库：`/home/zocs/Devs/catcoding-web`
 > 用途：记录执行复盘、计划更新与下一轮任务
 
-## 当前状态（2026-04-28 01:01 CST）
+## 当前状态（2026-04-28 01:04 CST）
 
 - 站点框架：Astro 6，双语页面（`/` + `/zh/`）
 - 质量门禁：`npm run ci` 通过（`astro check` + `astro build`）
@@ -87,6 +87,14 @@
 - 实施：`ci-quality.yml` 中 `LH_MIN_PERFORMANCE` 从 `85` 提升到 `90`
 - 验证：本地以 `LH_MIN_PERFORMANCE=90` 运行 `npm run ci:quality` 通过
 
+## 本轮执行复盘（2026-04-28 凌晨第 11 轮）
+
+- code review：按计划引入分环境阈值策略，并优化 workflow 重复构建
+- 实施：
+- `ci-quality.yml` 中 `LH_MIN_PERFORMANCE` 改为按分支动态策略：`master=95`，其余 `90`
+- workflow 的 Lighthouse 步骤加 `LH_SKIP_BUILD=1`，复用前一步构建产物
+- 验证：本地以 `LH_MIN_PERFORMANCE=95` 执行 `npm run ci:quality` 通过
+
 ## 强制环节（与主仓库对齐）
 
 每轮自动推进必须执行：
@@ -100,4 +108,4 @@
 
 1. 视图扩展后同步验证 sitemap 自动生成覆盖率
 2. 评估在 CI 中缓存 `node_modules` 与 Lighthouse 依赖以缩短总时长
-3. 按环境分层阈值（PR 90 / main 95）并观察稳定性
+3. 观察一段时间后再评估是否将 `master` 性能阈值提升到 98
