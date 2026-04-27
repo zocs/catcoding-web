@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "gen:sitemap": "node scripts/gen-sitemap.mjs",
+    "audit:lighthouse": "node scripts/lighthouse-baseline.mjs",
     "ci": "npm run check && npm run build"
   },
   "dependencies": {

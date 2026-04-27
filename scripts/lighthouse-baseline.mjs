@@ -1,0 +1,83 @@
+import { spawn } from 'node:child_process';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+
+const cwd = path.resolve('.');
+const tempDir = await mkdtemp(path.join(os.tmpdir(), 'catcoding-lh-'));
+
+function run(cmd, args, options = {}) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(cmd, args, {
+      cwd,
+      stdio: options.stdio ?? 'inherit',
+      shell: false,
+      env: process.env,
+    });
+    child.on('error', reject);
+    child.on('exit', (code) => {
+      if (code === 0) resolve();
+      else reject(new Error(`${cmd} ${args.join(' ')} failed with code ${code}`));
+    });
+  });
+}
+
+function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+const reportPaths = {
+  home: path.join(tempDir, 'home.json'),
+  zh: path.join(tempDir, 'zh.json'),
+};
+
+let serverProcess;
+try {
+  await run('npm', ['run', 'build']);
+
+  serverProcess = spawn('npx', ['--yes', 'http-server', 'dist', '-p', '4321'], {
+    cwd,
+    stdio: 'inherit',
+    env: process.env,
+  });
+  await sleep(1500);
+
+  const runLighthouse = async (url, outputPath) => {
+    await run('npx', [
+      '--yes',
+      'lighthouse',
+      url,
+      '--quiet',
+      '--chrome-flags=--headless=new --no-sandbox',
+      '--only-categories=performance,accessibility,best-practices,seo',
+      '--output',
+      'json',
+      `--output-path=${outputPath}`,
+    ]);
+  };
+
+  await runLighthouse('http://127.0.0.1:4321', reportPaths.home);
+  await runLighthouse('http://127.0.0.1:4321/zh/', reportPaths.zh);
+
+  const loadScore = async (file) => {
+    const data = JSON.parse(await readFile(file, 'utf8'));
+    return {
+      performance: Math.round(data.categories.performance.score * 100),
+      accessibility: Math.round(data.categories.accessibility.score * 100),
+      bestPractices: Math.round(data.categories['best-practices'].score * 100),
+      seo: Math.round(data.categories.seo.score * 100),
+    };
+  };
+
+  const home = await loadScore(reportPaths.home);
+  const zh = await loadScore(reportPaths.zh);
+
+  console.log('\nLighthouse baseline (mobile):');
+  console.log(`- /    : P ${home.performance} | A11y ${home.accessibility} | BP ${home.bestPractices} | SEO ${home.seo}`);
+  console.log(`- /zh/ : P ${zh.performance} | A11y ${zh.accessibility} | BP ${zh.bestPractices} | SEO ${zh.seo}`);
+} finally {
+  if (serverProcess && !serverProcess.killed) {
+    serverProcess.kill('SIGINT');
+  }
+  await rm(tempDir, { recursive: true, force: true });
+}
