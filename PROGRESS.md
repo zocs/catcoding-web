@@ -3,7 +3,7 @@
 > 仓库：`/home/zocs/Devs/catcoding-web`
 > 用途：记录执行复盘、计划更新与下一轮任务
 
-## 当前状态（2026-04-27 22:28 CST）
+## 当前状态（2026-04-27 22:31 CST）
 
 - 站点框架：Astro 6，双语页面（`/` + `/zh/`）
 - 质量门禁：`npm run ci` 通过（`astro check` + `astro build`）
@@ -58,6 +58,13 @@
 - 流程：新增 `npm run ci:quality`，串联 `ci + audit:lighthouse`
 - 验证：`npm run ci:quality` 通过，当前分数 `/` 与 `/zh/` 均为 `P86 / A11y92 / BP96 / SEO100`
 
+## 本轮执行复盘（2026-04-27 深夜第 7 轮）
+
+- code review：发现仓库缺少远端 CI 配置，质量门禁仅能本地执行
+- 实施：新增 `.github/workflows/ci-quality.yml`，在 push/PR 上执行 `npm ci` + `npm run ci` + `npm run audit:lighthouse`
+- 门禁阈值：workflow 中显式配置 `LH_MIN_*` 环境变量，与本地脚本一致
+- 验证：本地已提前通过 `npm run ci:quality`；远端 workflow 将在下一次 push/PR 自动生效
+
 ## 强制环节（与主仓库对齐）
 
 每轮自动推进必须执行：
@@ -69,6 +76,6 @@
 
 ## 下一轮候选
 
-1. 将 `ci:quality` 接入远端 CI（本仓库当前尚未配置 `.github/workflows`）
-2. 视图扩展后同步验证 sitemap 自动生成覆盖率
-3. 根据 Lighthouse 基线优化首屏性能（目标 P90+）
+1. 视图扩展后同步验证 sitemap 自动生成覆盖率
+2. 根据 Lighthouse 基线优化首屏性能（目标 P90+）
+3. 优化 Lighthouse 脚本，避免重复 build（`ci` 与 `audit` 串联时）
