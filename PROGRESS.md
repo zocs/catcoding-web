@@ -3,7 +3,7 @@
 > 仓库：`/home/zocs/Devs/catcoding-web`
 > 用途：记录执行复盘、计划更新与下一轮任务
 
-## 当前状态（2026-04-27 22:32 CST）
+## 当前状态（2026-04-28 00:59 CST）
 
 - 站点框架：Astro 6，双语页面（`/` + `/zh/`）
 - 质量门禁：`npm run ci` 通过（`astro check` + `astro build`）
@@ -71,6 +71,16 @@
 - 实施：`lighthouse-baseline.mjs` 支持 `LH_SKIP_BUILD=1`，`ci:quality` 传入该变量复用 `ci` 产物
 - 验证：`npm run ci:quality` 通过，分数保持 `P86 / A11y92 / BP96 / SEO100`
 
+## 本轮执行复盘（2026-04-28 凌晨第 9 轮）
+
+- code review：继续针对首屏性能做优化，减少关键路径资源与非关键脚本干扰
+- 实施：
+- `Base.astro` 移除 Google Fonts 外链（避免外部字体请求阻塞）
+- `cat-hunt.js` 改为“用户意图触发 + idle 回退”动态加载
+- 验证：`npm run ci:quality` 通过，Lighthouse 基线提升为：
+- `/`：`P100 / A11y92 / BP96 / SEO100`
+- `/zh/`：`P100 / A11y92 / BP96 / SEO100`
+
 ## 强制环节（与主仓库对齐）
 
 每轮自动推进必须执行：
@@ -83,5 +93,5 @@
 ## 下一轮候选
 
 1. 视图扩展后同步验证 sitemap 自动生成覆盖率
-2. 根据 Lighthouse 基线优化首屏性能（目标 P90+）
-3. 评估在 CI 中缓存 `node_modules` 与 Lighthouse 依赖以缩短总时长
+2. 评估在 CI 中缓存 `node_modules` 与 Lighthouse 依赖以缩短总时长
+3. 补充“性能回归”守卫（阈值策略分环境）
