@@ -3,7 +3,7 @@
 > 仓库：`/home/zocs/Devs/catcoding-web`
 > 用途：记录执行复盘、计划更新与下一轮任务
 
-## 当前状态（2026-04-28 01:29 CST）
+## 当前状态（2026-04-28 01:32 CST）
 
 - 站点框架：Astro 6，双语页面（`/` + `/zh/`）
 - 质量门禁：`npm run ci` 通过（`astro check` + `astro build`）
@@ -120,6 +120,14 @@
 - 实施：`package.json` 的 `ci:quality` 改为默认 `LH_MIN_PERFORMANCE=90`
 - 验证：`npm run ci:quality` 通过；分数维持 `P100 / A11y92 / BP96 / SEO100`
 - 发布策略：本地先提交，待当前远端 run 完成后再合并下一次 push，避免短时间重复触发
+
+## 本轮执行复盘（2026-04-28 凌晨第 15 轮）
+
+- code review：CI 触发频率偏高，文档提交也会触发质量门禁，易造成无效 run 堆积
+- 实施：
+- `ci-quality.yml` 新增 `concurrency`（同分支仅保留最新 run，自动取消旧 run）
+- `push/pull_request` 新增 `paths-ignore: PROGRESS.md`（纯计划文档更新不触发 CI）
+- 预期收益：减少 CI 资源浪费与“短时间多次 CI”风险
 
 ## 强制环节（与主仓库对齐）
 

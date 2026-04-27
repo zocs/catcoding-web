@@ -4,8 +4,16 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - PROGRESS.md
   pull_request:
+    paths-ignore:
+      - PROGRESS.md
   workflow_dispatch:
+
+concurrency:
+  group: ci-quality-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   quality:
