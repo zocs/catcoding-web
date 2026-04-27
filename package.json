@@ -10,7 +10,7 @@
     "ci": "npm run check && npm run build"
   },
   "dependencies": {
-    "astro": "^5.7.0"
+    "astro": "^6.1.9"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.8",
