@@ -3,7 +3,7 @@
 > 仓库：`/home/zocs/Devs/catcoding-web`
 > 用途：记录执行复盘、计划更新与下一轮任务
 
-## 当前状态（2026-04-27 21:19 CST）
+## 当前状态（2026-04-27 21:23 CST）
 
 - 站点框架：Astro 6，双语页面（`/` + `/zh/`）
 - 质量门禁：`npm run ci` 通过（`astro check` + `astro build`）
@@ -37,6 +37,14 @@
 - 实施：新增 `scripts/gen-sitemap.mjs`，并通过 `prebuild -> gen:sitemap` 自动生成 `public/sitemap.xml`
 - 验证：`npm run ci` 通过，构建中已自动生成 sitemap（2 routes）
 
+## 本轮执行复盘（2026-04-27 深夜第 4 轮）
+
+- code review：将 Lighthouse 基线手工命令固化为可重复脚本
+- 实施：新增 `scripts/lighthouse-baseline.mjs`，并增加命令 `npm run audit:lighthouse`
+- 结果（脚本实测）：`/` 与 `/zh/` 均为 `P86 / A11y92 / BP96 / SEO100`
+- 备注：该分值低于手工单次结果，后续按同一脚本持续对比趋势（减少口径漂移）
+- 验证：`npm run audit:lighthouse` + `npm run ci` 均通过
+
 ## 强制环节（与主仓库对齐）
 
 每轮自动推进必须执行：
@@ -49,5 +57,5 @@
 ## 下一轮候选
 
 1. 补充社交分享专用 OG 封面图（替换当前 favicon）
-2. 引入持续 Lighthouse 检查脚本（CI 可执行）
+2. 将 `audit:lighthouse` 接入 CI，并设置阈值告警策略
 3. 视图扩展后同步验证 sitemap 自动生成覆盖率
