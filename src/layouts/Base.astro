@@ -44,14 +44,10 @@ const ogImage = `${siteOrigin}/og-cover.svg`;
   <link rel="alternate" hreflang="zh-CN" href={`${siteOrigin}/zh/`} />
   <link rel="alternate" hreflang="x-default" href={`${siteOrigin}/`} />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
 </head>
 <body>
   <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" title="Toggle light/dark"></button>
   <slot />
-  <script src="/cat-hunt.js" is:inline></script>
   <script is:inline>
     (function() {
       const btn = document.getElementById('theme-toggle');
@@ -67,6 +63,31 @@ const ogImage = `${siteOrigin}/og-cover.svg`;
         localStorage.setItem('cc-theme', next);
         btn.textContent = next === 'dark' ? '☀️' : '🌙';
       });
+
+      let catHuntLoaded = false;
+      const loadCatHunt = function() {
+        if (catHuntLoaded) return;
+        catHuntLoaded = true;
+        const script = document.createElement('script');
+        script.src = '/cat-hunt.js';
+        script.async = true;
+        document.body.appendChild(script);
+      };
+
+      const onUserIntent = function() {
+        loadCatHunt();
+        window.removeEventListener('pointermove', onUserIntent);
+        window.removeEventListener('touchstart', onUserIntent);
+        window.removeEventListener('keydown', onUserIntent);
+      };
+      window.addEventListener('pointermove', onUserIntent, { once: true, passive: true });
+      window.addEventListener('touchstart', onUserIntent, { once: true, passive: true });
+      window.addEventListener('keydown', onUserIntent, { once: true });
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadCatHunt, { timeout: 4000 });
+      } else {
+        setTimeout(loadCatHunt, 4000);
+      }
     })();
   </script>
   <footer>
