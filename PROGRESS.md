@@ -3,7 +3,7 @@
 > 仓库：`/home/zocs/Devs/catcoding-web`
 > 用途：记录执行复盘、计划更新与下一轮任务
 
-## 当前状态（2026-04-27 21:25 CST）
+## 当前状态（2026-04-27 22:28 CST）
 
 - 站点框架：Astro 6，双语页面（`/` + `/zh/`）
 - 质量门禁：`npm run ci` 通过（`astro check` + `astro build`）
@@ -51,6 +51,13 @@
 - 实施：新增 `public/og-cover.svg`（1200x630），并在 `Base.astro` 中将 `og:image` / `twitter:image` 切换到该图
 - 验证：`npm run ci` 通过
 
+## 本轮执行复盘（2026-04-27 深夜第 6 轮）
+
+- code review：将 Lighthouse 从“可执行”升级为“可作为质量门禁”
+- 实施：`scripts/lighthouse-baseline.mjs` 新增阈值断言（默认 `P>=85, A11y>=90, BP>=90, SEO>=100`）
+- 流程：新增 `npm run ci:quality`，串联 `ci + audit:lighthouse`
+- 验证：`npm run ci:quality` 通过，当前分数 `/` 与 `/zh/` 均为 `P86 / A11y92 / BP96 / SEO100`
+
 ## 强制环节（与主仓库对齐）
 
 每轮自动推进必须执行：
@@ -62,6 +69,6 @@
 
 ## 下一轮候选
 
-1. 将 `audit:lighthouse` 接入 CI，并设置阈值告警策略
+1. 将 `ci:quality` 接入远端 CI（本仓库当前尚未配置 `.github/workflows`）
 2. 视图扩展后同步验证 sitemap 自动生成覆盖率
 3. 根据 Lighthouse 基线优化首屏性能（目标 P90+）
