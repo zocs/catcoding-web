@@ -3,7 +3,7 @@
 > 仓库：`/home/zocs/Devs/catcoding-web`
 > 用途：记录执行复盘、计划更新与下一轮任务
 
-## 当前状态（2026-04-27 22:31 CST）
+## 当前状态（2026-04-27 22:32 CST）
 
 - 站点框架：Astro 6，双语页面（`/` + `/zh/`）
 - 质量门禁：`npm run ci` 通过（`astro check` + `astro build`）
@@ -65,6 +65,12 @@
 - 门禁阈值：workflow 中显式配置 `LH_MIN_*` 环境变量，与本地脚本一致
 - 验证：本地已提前通过 `npm run ci:quality`；远端 workflow 将在下一次 push/PR 自动生效
 
+## 本轮执行复盘（2026-04-27 深夜第 8 轮）
+
+- code review：`ci:quality` 串联时发现 `ci` 与 `audit:lighthouse` 都会 build，存在重复构建
+- 实施：`lighthouse-baseline.mjs` 支持 `LH_SKIP_BUILD=1`，`ci:quality` 传入该变量复用 `ci` 产物
+- 验证：`npm run ci:quality` 通过，分数保持 `P86 / A11y92 / BP96 / SEO100`
+
 ## 强制环节（与主仓库对齐）
 
 每轮自动推进必须执行：
@@ -78,4 +84,4 @@
 
 1. 视图扩展后同步验证 sitemap 自动生成覆盖率
 2. 根据 Lighthouse 基线优化首屏性能（目标 P90+）
-3. 优化 Lighthouse 脚本，避免重复 build（`ci` 与 `audit` 串联时）
+3. 评估在 CI 中缓存 `node_modules` 与 Lighthouse 依赖以缩短总时长
