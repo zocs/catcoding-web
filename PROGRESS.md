@@ -3,7 +3,7 @@
 > 仓库：`/home/zocs/Devs/catcoding-web`
 > 用途：记录执行复盘、计划更新与下一轮任务
 
-## 当前状态（2026-04-28 01:04 CST）
+## 当前状态（2026-04-28 01:06 CST）
 
 - 站点框架：Astro 6，双语页面（`/` + `/zh/`）
 - 质量门禁：`npm run ci` 通过（`astro check` + `astro build`）
@@ -94,6 +94,16 @@
 - `ci-quality.yml` 中 `LH_MIN_PERFORMANCE` 改为按分支动态策略：`master=95`，其余 `90`
 - workflow 的 Lighthouse 步骤加 `LH_SKIP_BUILD=1`，复用前一步构建产物
 - 验证：本地以 `LH_MIN_PERFORMANCE=95` 执行 `npm run ci:quality` 通过
+
+## 本轮执行复盘（2026-04-28 凌晨第 12 轮）
+
+- code review：`audit:lighthouse` 仍依赖 `npx` 在线拉取，执行时存在网络波动风险
+- 实施：
+- 将 `lighthouse` 与 `http-server` 固化为 devDependencies（锁定在项目 lockfile）
+- `lighthouse-baseline.mjs` 改为 `npx --no-install`，只使用本地依赖
+- 验证：
+- `LH_MIN_PERFORMANCE=95 npm run ci:quality` 通过
+- `npm audit --omit=dev --json` 显示生产依赖漏洞为 0
 
 ## 强制环节（与主仓库对齐）
 
