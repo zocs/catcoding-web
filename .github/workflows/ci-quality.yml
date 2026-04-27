@@ -29,7 +29,7 @@ jobs:
 
       - name: Lighthouse Quality Gate
         env:
-          LH_MIN_PERFORMANCE: "85"
+          LH_MIN_PERFORMANCE: "90"
           LH_MIN_ACCESSIBILITY: "90"
           LH_MIN_BEST_PRACTICES: "90"
           LH_MIN_SEO: "100"
