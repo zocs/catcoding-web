@@ -5,10 +5,19 @@ interface Props {
   title: string;
   description?: string;
   lang?: string;
+  path?: string;
 }
 
-const { title, description = 'Let AI cats collaborate like a dev team', lang = 'en' } = Astro.props;
+const {
+  title,
+  description = 'Let AI cats collaborate like a dev team',
+  lang = 'en',
+  path = '/',
+} = Astro.props;
 const langDesc = lang === 'zh' ? '让 AI 像猫咪团队一样协作写代码' : description;
+const siteOrigin = 'https://catcoding.org';
+const canonicalPath = path.startsWith('/') ? path : `/${path}`;
+const canonicalUrl = `${siteOrigin}${canonicalPath}`;
 ---
 <!DOCTYPE html>
 <html lang={lang}>
@@ -17,6 +26,10 @@ const langDesc = lang === 'zh' ? '让 AI 像猫咪团队一样协作写代码' :
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={langDesc} />
   <title>{title} — CatCoding</title>
+  <link rel="canonical" href={canonicalUrl} />
+  <link rel="alternate" hreflang="en" href={`${siteOrigin}/`} />
+  <link rel="alternate" hreflang="zh-CN" href={`${siteOrigin}/zh/`} />
+  <link rel="alternate" hreflang="x-default" href={`${siteOrigin}/`} />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
