@@ -18,6 +18,8 @@ const langDesc = lang === 'zh' ? '让 AI 像猫咪团队一样协作写代码' :
 const siteOrigin = 'https://catcoding.org';
 const canonicalPath = path.startsWith('/') ? path : `/${path}`;
 const canonicalUrl = `${siteOrigin}${canonicalPath}`;
+const ogLocale = lang === 'zh' ? 'zh_CN' : 'en_US';
+const ogImage = `${siteOrigin}/favicon.svg`;
 ---
 <!DOCTYPE html>
 <html lang={lang}>
@@ -26,6 +28,17 @@ const canonicalUrl = `${siteOrigin}${canonicalPath}`;
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={langDesc} />
   <title>{title} — CatCoding</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CatCoding" />
+  <meta property="og:title" content={`${title} — CatCoding`} />
+  <meta property="og:description" content={langDesc} />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:locale" content={ogLocale} />
+  <meta property="og:image" content={ogImage} />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content={`${title} — CatCoding`} />
+  <meta name="twitter:description" content={langDesc} />
+  <meta name="twitter:image" content={ogImage} />
   <link rel="canonical" href={canonicalUrl} />
   <link rel="alternate" hreflang="en" href={`${siteOrigin}/`} />
   <link rel="alternate" hreflang="zh-CN" href={`${siteOrigin}/zh/`} />
