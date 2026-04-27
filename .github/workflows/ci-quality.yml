@@ -1,0 +1,36 @@
+name: CI Quality
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build And Type Check
+        run: npm run ci
+
+      - name: Lighthouse Quality Gate
+        env:
+          LH_MIN_PERFORMANCE: "85"
+          LH_MIN_ACCESSIBILITY: "90"
+          LH_MIN_BEST_PRACTICES: "90"
+          LH_MIN_SEO: "100"
+        run: npm run audit:lighthouse
