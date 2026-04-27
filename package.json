@@ -3,10 +3,12 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
+    "prebuild": "npm run gen:sitemap",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "gen:sitemap": "node scripts/gen-sitemap.mjs",
     "ci": "npm run check && npm run build"
   },
   "dependencies": {
