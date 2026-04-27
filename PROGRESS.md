@@ -3,7 +3,7 @@
 > 仓库：`/home/zocs/Devs/catcoding-web`
 > 用途：记录执行复盘、计划更新与下一轮任务
 
-## 当前状态（2026-04-28 01:06 CST）
+## 当前状态（2026-04-28 01:27 CST）
 
 - 站点框架：Astro 6，双语页面（`/` + `/zh/`）
 - 质量门禁：`npm run ci` 通过（`astro check` + `astro build`）
@@ -104,6 +104,15 @@
 - 验证：
 - `LH_MIN_PERFORMANCE=95 npm run ci:quality` 通过
 - `npm audit --omit=dev --json` 显示生产依赖漏洞为 0
+
+## 本轮执行复盘（2026-04-28 凌晨第 13 轮）
+
+- 线上故障复盘：GitHub `CI Quality` 连续失败，根因是 workflow 使用 Node 20，而 Astro 6 要求 `>=22.12.0`
+- 实施修复：`.github/workflows/ci-quality.yml` 的 `setup-node` 改为 `22.12.0`
+- 验证：
+- 本地 `npm run ci:quality` 通过
+- Lighthouse 仍保持 `P100 / A11y92 / BP96 / SEO100`（`/` 与 `/zh/`）
+- 推送策略：仅在本轮修复完成后单次 push，避免短时间多次触发 CI
 
 ## 强制环节（与主仓库对齐）
 
