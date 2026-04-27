@@ -3,7 +3,7 @@
 > 仓库：`/home/zocs/Devs/catcoding-web`
 > 用途：记录执行复盘、计划更新与下一轮任务
 
-## 当前状态（2026-04-28 01:27 CST）
+## 当前状态（2026-04-28 01:29 CST）
 
 - 站点框架：Astro 6，双语页面（`/` + `/zh/`）
 - 质量门禁：`npm run ci` 通过（`astro check` + `astro build`）
@@ -113,6 +113,13 @@
 - 本地 `npm run ci:quality` 通过
 - Lighthouse 仍保持 `P100 / A11y92 / BP96 / SEO100`（`/` 与 `/zh/`）
 - 推送策略：仅在本轮修复完成后单次 push，避免短时间多次触发 CI
+
+## 本轮执行复盘（2026-04-28 凌晨第 14 轮）
+
+- code review：本地 `ci:quality` 默认阈值仍是 `P85`，与远端策略存在口径差异
+- 实施：`package.json` 的 `ci:quality` 改为默认 `LH_MIN_PERFORMANCE=90`
+- 验证：`npm run ci:quality` 通过；分数维持 `P100 / A11y92 / BP96 / SEO100`
+- 发布策略：本地先提交，待当前远端 run 完成后再合并下一次 push，避免短时间重复触发
 
 ## 强制环节（与主仓库对齐）
 
