@@ -3,7 +3,7 @@
 > 仓库：`/home/zocs/Devs/catcoding-web`
 > 用途：记录执行复盘、计划更新与下一轮任务
 
-## 当前状态（2026-04-28 08:24 CST）
+## 当前状态（2026-04-28 08:34 CST）
 
 - 站点框架：Astro 6，双语页面（`/` + `/zh/`）
 - 质量门禁：`npm run ci` 通过（`astro check` + `astro build`）
@@ -153,6 +153,13 @@
 - 验证：
 - 本地按远端同口径执行：`npm run ci && LH_SKIP_BUILD=1 LH_MIN_PERFORMANCE=95 npm run audit:lighthouse` 通过
 - Lighthouse：`/` 与 `/zh/` 均 `P100 / A11y92 / BP96 / SEO100`
+
+## 本轮执行复盘（2026-04-28 上午第 19 轮）
+
+- code review：仅 `SIGTERM` 仍可能导致子进程悬挂，CI 会卡住直到步骤超时
+- 实施：`lighthouse-baseline.mjs` 超时策略升级为 `SIGTERM -> 5s 后 SIGKILL`，并在超时时立即 reject
+- 验证：本地 `npm run ci:quality` 通过，功能与分数不回退
+- 结果：避免 Lighthouse 子进程僵死导致的长时间卡顿
 
 ## 强制环节（与主仓库对齐）
 

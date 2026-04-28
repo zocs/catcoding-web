@@ -15,14 +15,31 @@ function run(cmd, args, options = {}) {
       env: process.env,
     });
     let timer;
+    let timedOut = false;
+    let killedHard = false;
     if (options.timeoutMs && Number.isFinite(options.timeoutMs)) {
       timer = setTimeout(() => {
+        timedOut = true;
         child.kill('SIGTERM');
+        setTimeout(() => {
+          if (!killedHard && child.exitCode === null) {
+            killedHard = true;
+            child.kill('SIGKILL');
+          }
+        }, 5000);
       }, options.timeoutMs);
     }
     child.on('error', reject);
     child.on('exit', (code) => {
       if (timer) clearTimeout(timer);
+      if (timedOut) {
+        reject(
+          new Error(
+            `${cmd} ${args.join(' ')} timed out after ${options.timeoutMs}ms`
+          )
+        );
+        return;
+      }
       if (code === 0) resolve();
       else reject(new Error(`${cmd} ${args.join(' ')} failed with code ${code}`));
     });
