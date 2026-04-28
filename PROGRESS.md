@@ -3,7 +3,7 @@
 > 仓库：`/home/zocs/Devs/catcoding-web`
 > 用途：记录执行复盘、计划更新与下一轮任务
 
-## 当前状态（2026-04-28 08:51 CST）
+## 当前状态（2026-04-28 09:02 CST）
 
 - 站点框架：Astro 6，双语页面（`/` + `/zh/`）
 - 质量门禁：`npm run ci` 通过（`astro check` + `astro build`）
@@ -185,6 +185,14 @@
 - workflow Node 升级到 `22.19.0`，消除 `lighthouse@13` 的 Node 引擎不匹配告警
 - 本地验证：`npm run ci:quality` 通过，`/` 与 `/zh/` 均为 `P100 / A11y92 / BP100 / SEO100`
 - 触发控制：本轮只做一组修复提交后再单次 push，避免短时间重复触发 CI
+
+## 本轮执行复盘（2026-04-28 上午第 23 轮）
+
+- 线上复盘：run `25027771337` 虽已输出 Lighthouse 通过结果，但步骤在 8 分钟后超时
+- 根因：`audit:lighthouse` 结束后 `http-server` 子进程在 CI 中未稳定退出，导致 Node 进程悬挂
+- 修复：`scripts/lighthouse-baseline.mjs` 增加 `stopProcess()`，执行 `SIGTERM` 优雅退出，超时后 `SIGKILL` 强制回收
+- 本地验证：`LH_SKIP_BUILD=1 LH_MIN_PERFORMANCE=90 npm run audit:lighthouse` 通过且正常退出
+- 推送策略：仅此修复单次 push，再观察该次 CI 结果
 
 ## 强制环节（与主仓库对齐）
 

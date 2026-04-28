@@ -50,6 +50,23 @@ function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+async function stopProcess(child, graceMs = 3000) {
+  if (!child || child.exitCode !== null) return;
+  let resolved = false;
+  const exitPromise = new Promise((resolve) => {
+    child.once('exit', () => {
+      resolved = true;
+      resolve();
+    });
+  });
+  child.kill('SIGTERM');
+  await Promise.race([exitPromise, sleep(graceMs)]);
+  if (!resolved && child.exitCode === null) {
+    child.kill('SIGKILL');
+    await Promise.race([exitPromise, sleep(1000)]);
+  }
+}
+
 const reportPaths = {
   home: path.join(tempDir, 'home.json'),
   zh: path.join(tempDir, 'zh.json'),
@@ -164,8 +181,6 @@ try {
   assertThreshold('/', home);
   assertThreshold('/zh/', zh);
 } finally {
-  if (serverProcess && !serverProcess.killed) {
-    serverProcess.kill('SIGINT');
-  }
+  await stopProcess(serverProcess);
   await rm(tempDir, { recursive: true, force: true });
 }
