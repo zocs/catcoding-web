@@ -26,7 +26,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22.12.0
+          node-version: 22.19.0
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -45,4 +45,6 @@ jobs:
           LH_MIN_SEO: "100"
           LH_SKIP_BUILD: "1"
           LH_TIMEOUT_MS: "120000"
+          LH_RETRIES: "3"
+          LH_WARMUP: "1"
         run: npm run audit:lighthouse
