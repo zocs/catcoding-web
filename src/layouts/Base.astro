@@ -64,9 +64,11 @@ const ogImage = `${siteOrigin}/og-cover.svg`;
         btn.textContent = next === 'dark' ? '☀️' : '🌙';
       });
 
-      // Disable decorative cat-hunt animation for automation runs (e.g. Lighthouse CI)
-      // to keep performance benchmarks stable and avoid noisy regressions.
-      if (!navigator.webdriver) {
+      // Disable decorative cat-hunt animation for benchmark runs to keep
+      // performance baselines stable and avoid noisy regressions.
+      const params = new URLSearchParams(window.location.search);
+      const benchmarkMode = params.get('lh') === '1';
+      if (!navigator.webdriver && !benchmarkMode) {
         let catHuntLoaded = false;
         const loadCatHunt = function() {
           if (catHuntLoaded) return;

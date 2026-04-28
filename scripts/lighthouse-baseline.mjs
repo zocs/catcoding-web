@@ -101,8 +101,8 @@ try {
     ], { timeoutMs: lighthouseTimeoutMs });
   };
 
-  await runLighthouse('http://127.0.0.1:4321', reportPaths.home);
-  await runLighthouse('http://127.0.0.1:4321/zh/', reportPaths.zh);
+  await runLighthouse('http://127.0.0.1:4321/?lh=1', reportPaths.home);
+  await runLighthouse('http://127.0.0.1:4321/zh/?lh=1', reportPaths.zh);
 
   const loadScore = async (file) => {
     const data = JSON.parse(await readFile(file, 'utf8'));

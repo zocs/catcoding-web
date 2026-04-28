@@ -3,7 +3,7 @@
 > 仓库：`/home/zocs/Devs/catcoding-web`
 > 用途：记录执行复盘、计划更新与下一轮任务
 
-## 当前状态（2026-04-28 08:34 CST）
+## 当前状态（2026-04-28 08:37 CST）
 
 - 站点框架：Astro 6，双语页面（`/` + `/zh/`）
 - 质量门禁：`npm run ci` 通过（`astro check` + `astro build`）
@@ -160,6 +160,15 @@
 - 实施：`lighthouse-baseline.mjs` 超时策略升级为 `SIGTERM -> 5s 后 SIGKILL`，并在超时时立即 reject
 - 验证：本地 `npm run ci:quality` 通过，功能与分数不回退
 - 结果：避免 Lighthouse 子进程僵死导致的长时间卡顿
+
+## 本轮执行复盘（2026-04-28 上午第 20 轮）
+
+- 线上复盘：`master` 阈值 95 下，首页性能在 CI 出现偶发抖动（81/83），导致间歇失败
+- 稳定化修复：
+- `lighthouse-baseline.mjs` 审计 URL 改为 `/?lh=1` 与 `/zh/?lh=1`
+- `Base.astro` 在 `lh=1` 参数下禁用 `cat-hunt` 注入，确保基准环境稳定
+- 验证：按远端同口径执行 `npm run ci && LH_SKIP_BUILD=1 LH_MIN_PERFORMANCE=95 npm run audit:lighthouse` 通过
+- 最新分数：`/` 与 `/zh/` 均 `P100 / A11y92 / BP100 / SEO100`
 
 ## 强制环节（与主仓库对齐）
 
