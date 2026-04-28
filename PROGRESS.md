@@ -3,7 +3,7 @@
 > 仓库：`/home/zocs/Devs/catcoding-web`
 > 用途：记录执行复盘、计划更新与下一轮任务
 
-## 当前状态（2026-04-28 09:11 CST）
+## 当前状态（2026-04-28 09:13 CST）
 
 - 站点框架：Astro 6，双语页面（`/` + `/zh/`）
 - 质量门禁：`npm run ci` 通过（`astro check` + `astro build`）
@@ -200,6 +200,13 @@
 - 前瞻修复：在 `.github/workflows/ci-quality.yml` 的 job 环境加入 `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true`
 - 目的：提前适配 GitHub Actions 在 2026-06-02 之后默认 Node24 的执行策略，降低后续同类 CI 风险
 - 推进策略：保持单次 push，避免短时间重复触发
+
+## 本轮执行复盘（2026-04-28 上午第 25 轮）
+
+- 复核发现：run 虽通过，但仍有 `actions/*@v4` 的 Node20 目标弃用注释
+- 修复：`ci-quality.yml` 中 `actions/checkout` 与 `actions/setup-node` 升级到 `@v6`
+- 依据：上游最新 release 分别为 `checkout v6.0.2`、`setup-node v6.4.0`
+- 目标：彻底移除 Node20 目标警告，避免未来运行时策略变更带来的隐性失败
 
 ## 强制环节（与主仓库对齐）
 
