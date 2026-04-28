@@ -3,7 +3,7 @@
 > 仓库：`/home/zocs/Devs/catcoding-web`
 > 用途：记录执行复盘、计划更新与下一轮任务
 
-## 当前状态（2026-04-28 09:02 CST）
+## 当前状态（2026-04-28 09:11 CST）
 
 - 站点框架：Astro 6，双语页面（`/` + `/zh/`）
 - 质量门禁：`npm run ci` 通过（`astro check` + `astro build`）
@@ -193,6 +193,13 @@
 - 修复：`scripts/lighthouse-baseline.mjs` 增加 `stopProcess()`，执行 `SIGTERM` 优雅退出，超时后 `SIGKILL` 强制回收
 - 本地验证：`LH_SKIP_BUILD=1 LH_MIN_PERFORMANCE=90 npm run audit:lighthouse` 通过且正常退出
 - 推送策略：仅此修复单次 push，再观察该次 CI 结果
+
+## 本轮执行复盘（2026-04-28 上午第 24 轮）
+
+- 用户复核：虽然最新 run 已恢复成功，但历史失败仍可见，且 workflow 存在 Node20 actions 弃用预警
+- 前瞻修复：在 `.github/workflows/ci-quality.yml` 的 job 环境加入 `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true`
+- 目的：提前适配 GitHub Actions 在 2026-06-02 之后默认 Node24 的执行策略，降低后续同类 CI 风险
+- 推进策略：保持单次 push，避免短时间重复触发
 
 ## 强制环节（与主仓库对齐）
 
