@@ -37,10 +37,12 @@ jobs:
         run: npm run ci
 
       - name: Lighthouse Quality Gate
+        timeout-minutes: 8
         env:
           LH_MIN_PERFORMANCE: ${{ github.ref == 'refs/heads/master' && '95' || '90' }}
           LH_MIN_ACCESSIBILITY: "90"
           LH_MIN_BEST_PRACTICES: "90"
           LH_MIN_SEO: "100"
           LH_SKIP_BUILD: "1"
+          LH_TIMEOUT_MS: "120000"
         run: npm run audit:lighthouse

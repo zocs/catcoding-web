@@ -3,7 +3,7 @@
 > 仓库：`/home/zocs/Devs/catcoding-web`
 > 用途：记录执行复盘、计划更新与下一轮任务
 
-## 当前状态（2026-04-28 01:37 CST）
+## 当前状态（2026-04-28 08:18 CST）
 
 - 站点框架：Astro 6，双语页面（`/` + `/zh/`）
 - 质量门禁：`npm run ci` 通过（`astro check` + `astro build`）
@@ -134,6 +134,15 @@
 - code review：CI 缓存策略可再收敛，显式 lockfile 路径更稳
 - 实施：`ci-quality.yml` 的 `setup-node` 增加 `cache-dependency-path: package-lock.json`
 - 预期收益：runner 缓存命中更稳定，降低安装阶段耗时抖动
+
+## 本轮执行复盘（2026-04-28 上午第 17 轮）
+
+- code review：远端 `CI Quality` 出现长时间卡在 Lighthouse 步骤的风险
+- 实施：
+- `lighthouse-baseline.mjs` 为每次 Lighthouse 调用增加进程超时（默认 `LH_TIMEOUT_MS=120000`）
+- 增加 `--max-wait-for-load=45000`，限制页面加载等待时长
+- workflow 的 `Lighthouse Quality Gate` 步骤增加 `timeout-minutes: 8` 并传入 `LH_TIMEOUT_MS`
+- 验证：本地 `npm run ci:quality` 通过，分数保持 `P100 / A11y92 / BP96 / SEO100`
 
 ## 强制环节（与主仓库对齐）
 

@@ -14,8 +14,15 @@ function run(cmd, args, options = {}) {
       shell: false,
       env: process.env,
     });
+    let timer;
+    if (options.timeoutMs && Number.isFinite(options.timeoutMs)) {
+      timer = setTimeout(() => {
+        child.kill('SIGTERM');
+      }, options.timeoutMs);
+    }
     child.on('error', reject);
     child.on('exit', (code) => {
+      if (timer) clearTimeout(timer);
       if (code === 0) resolve();
       else reject(new Error(`${cmd} ${args.join(' ')} failed with code ${code}`));
     });
@@ -37,6 +44,7 @@ const thresholds = {
   bestPractices: Number(process.env.LH_MIN_BEST_PRACTICES ?? 90),
   seo: Number(process.env.LH_MIN_SEO ?? 100),
 };
+const lighthouseTimeoutMs = Number(process.env.LH_TIMEOUT_MS ?? 120000);
 
 function assertThreshold(route, score) {
   const failures = Object.entries(thresholds)
@@ -69,10 +77,11 @@ try {
       '--quiet',
       '--chrome-flags=--headless=new --no-sandbox',
       '--only-categories=performance,accessibility,best-practices,seo',
+      '--max-wait-for-load=45000',
       '--output',
       'json',
       `--output-path=${outputPath}`,
-    ]);
+    ], { timeoutMs: lighthouseTimeoutMs });
   };
 
   await runLighthouse('http://127.0.0.1:4321', reportPaths.home);
